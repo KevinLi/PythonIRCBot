@@ -2,8 +2,8 @@
 """
 Program: CowBot
 Version: 0.0.2
-Author: banhammer
-Editors: Cam
+Author: banhammer (KevinLi)
+Editors: Cam (Cam1337)
 
 Description: CowBot is a bot designed to send different ascii cows and text to an IRC channel
 """
@@ -12,19 +12,19 @@ import socket
 import sys
 
 irc = socket.socket()
-network = 'irc.n0v4.com'
+network = ''
 port = 6667
-ircchannel = '#lobby'
+ircchannel = '#'
 
 ircname = 'Cow' # max 30 characters
-realname = "lolcow"
+realname = "cow"
 ident = "MOO"
 
 crlf = "\r\n"
 onoff = "off"
 cow = False
 
-admins = ["Banhammer","Horkx3"]
+admins = ["",""]
 
 def SendIRCRaw(x):
     irc.send(x+crlf)
@@ -66,8 +66,7 @@ while True:
             nick = ""
             text = ""
 # Ignore PMs -----------------------------------------------
-        #if location == ircname:
-        #    SendPM("Message ignored.")
+
 # Admin Commands -------------------------------------------
         cowc = " ".join(msg.split()[3:][1:])
         cowcnum = int(len(cowc))
