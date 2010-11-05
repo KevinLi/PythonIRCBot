@@ -14,21 +14,21 @@ from time import sleep
 
 #irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 irc = socket.socket()
-network = '173.230.146.5'
+network = ''
 port = 6667
-ircchannel = '#lobby'
+ircchannel = '#'
 
 ircname = 'Cowsay' # max 30 characters
 realname = 'COWSAYBOT'
 ident = 'cows'
-password = 'lolcowtrollu'
+password = ''
 
 crlf = '\r\n'
 onoff = 'on'
 cow = True
 
-admins = ["kevin","banhammer","horkx3","ferus"]
-allowedhosts = ["127.0.0.1","the.interwebs"]
+admins = []
+allowedhosts = []
 
 def SendIRCRaw(rawtext):
     irc.send(rawtext+crlf)
