@@ -1,8 +1,8 @@
 #! usr/bin/env python
 """
-Program: CowBot
-Version: 9.0.0.1
-Author: banhammer
+Program: Cowsay
+Version: 1.0.3.28
+Author: Kevin/banhammer
 Editors: Cam
 
 Description: CowBot is a bot designed to send different ascii cows and text to an IRC channel
@@ -10,54 +10,60 @@ Description: CowBot is a bot designed to send different ascii cows and text to a
 
 import socket
 import sys
+from time import sleep
 
+#irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 irc = socket.socket()
-network = 'irc.n0v4.com'
+network = '173.230.146.5'
 port = 6667
-ircchannel = '#Bots'
+ircchannel = '#lobby'
 
 ircname = 'Cowsay' # max 30 characters
 realname = 'COWSAYBOT'
-ident = 'CowsayBot'
+ident = 'cows'
+password = 'lolcowtrollu'
 
-crlf = "\r\n"
-onoff = "on"
+crlf = '\r\n'
+onoff = 'on'
 cow = True
 
-admins = ["Banhammer","Horkx3"]
+admins = ["kevin","banhammer","horkx3","ferus"]
 allowedhosts = ["127.0.0.1","the.interwebs"]
 
-def SendIRCRaw(x):
-    irc.send(x+crlf)
+def SendIRCRaw(rawtext):
+    irc.send(rawtext+crlf)
     
 def SendText(text):
-    irc.send("PRIVMSG %s :%s" % (location, text) + crlf)
+    irc.send("PRIVMSG {0} :{1}".format(location, text) + crlf)
 
 def SendPM(text):
-    irc.send("PRIVMSG %s :%s" % (nick, text) + crlf)
+    irc.send("PRIVMSG {0} :{1}".format(nick, text) + crlf)
     
 def CowIsOff():
     SendText("Cowsay is off.")
 
 irc.connect((network, port))
-SendIRCRaw("NICK %s" % ircname)
-SendIRCRaw("USER %s **** **** :%s" % (ident, realname))
-#sleep(3)
-#SendIRCRaw("MSG NickServ IDENTIFY password")
+SendIRCRaw("NICK {0}".format(ircname))
+SendIRCRaw("USER {0} **** **** :{1}".format(ident, realname))
+sleep(1)
+SendIRCRaw("NickServ IDENTIFY {0}".format(password))
+SendIRCRaw("MODE {0} +B".format(ircname))
+sleep(1)
+SendIRCRaw("JOIN %s" % ircchannel)
 
 # [0]host, [1]channel, [2]nick, [3+]message
 while True:
 # Parse Message --------------------------------------------    
         msg = irc.recv(512)
         msgsplit = msg.split()
-        print msg
+        print(msg)
         if len(msg.split())>0:
             if msg.split()[0] == "PING":
                 SendIRCRaw("PONG %s" % msg.split()[1])
-        if len(msg.split())>1:
-            if msg.split()[1] == "001":
-                print "001"
-                SendIRCRaw("JOIN %s" % ircchannel)
+#        if len(msg.split())>1:
+#            if msg.split()[1] == "001":
+#                print("001")
+#                SendIRCRaw("JOIN %s" % ircchannel)
         if len(msg.split())>=4:
             try:
                 host = msgsplit[0].split("@")[1].lower()
@@ -66,7 +72,7 @@ while True:
             text = " ".join(msg.split()[3:][1:])
             cmd = msg.split()[3][1:].lower()
             location = msg.split()[2]
-            nick = (msg.split()[0].split("!")[0])[1:].capitalize()
+            nick = (msg.split()[0].split("!")[0])[1:].lower()
         elif len(msg.split())>=4:
             cmd = msg.split()[4].lower()
         else:
@@ -74,6 +80,10 @@ while True:
             location = ""
             nick = ""
             text = ""
+# Logging --------------------------------------------------
+        cowsaylog = open("cowsaylog.txt",'a')
+#        cowsaylog.write(str(nick+"\t"+host+"\t"+location+"\t"+cmd+"\t"+text)+"\n")
+        cowsaylog.write(msg)
 # Ignore PMs -----------------------------------------------
 
 # Admin Commands -------------------------------------------
@@ -83,33 +93,34 @@ while True:
                     onoff = " ".join(msg.split()[3:][1:])
                     if onoff == "off":
                         cow = False
-                        SendIRCRaw("NOTICE %s COW OFF" % nick)
+                        SendIRCRaw("NOTICE {0} COW OFF".format(nick))
                     if onoff == "on":
                         cow = True
-                        SendIRCRaw("NOTICE %s COW ON" % nick)
-                if cmd == "cowpart":
+                        SendIRCRaw("NOTICE {0} COW ON".format(nick))
+                if cmd == "part":
                     SendIRCRaw("PART :#" + msg.split()[4])
-                if cmd == "cowjoin":
+                if cmd == "join":
                     SendIRCRaw("JOIN :#" + msg.split()[4])
                 if cmd == "cowshit":
-                    if nick == "Banhammer":
-                        SendIRCRaw("QUIT MOO")
-                        quit()
+                    SendIRCRaw("QUIT MOO")
+                    quit()
                 if cmd == "status":
                     SendPM(onoff)
+                if cmd == "sendraw":
+                    SendIRCRaw(" ".join(msg.split()[3:][1:]))
 # Cows -----------------------------------------------------
         c = " ".join(msg.split()[3:][1:])
         cnum = int(len(c))
         cdash = cnum*"_"
         cdash2 = cnum*"-"
         def say_beginning(cdash,c,cdash2):
-            SendText(" _%s_" % cdash)
-            SendText("< %s >" % c)
-            SendText(" -%s-" % cdash2)
+            SendText(" _{0}_".format(cdash))
+            SendText("< {0} >".format(c))
+            SendText(" -{0}-".format(cdash2))
         def thought_beginning(cdash,c,cdash2):
-            SendText(" _%s_" % cdash)
-            SendText("( %s )" % c)
-            SendText(" -%s-" % cdash2)
+            SendText(" _{0}_".format(cdash))
+            SendText("( {0} )".format(c))
+            SendText(" -{0}-".format(cdash2))
         if cow is True:
             if cmd == "cowsay":
                 say_beginning(cdash,c,cdash2)
@@ -173,4 +184,4 @@ while True:
                 SendText("NO YOU")
         if cmd == "beef":
             beef_for = " ".join(msg.split()[3:][1:])
-            SendIRCRaw("PRIVMSG %s :\x01ACTION cooks up some fancy steak for %s.\x01" % (location, beef_for))
+            SendIRCRaw("PRIVMSG {0} :\x01ACTION cooks up some fancy steak for {1}.\x01".format(location, beef_for))
