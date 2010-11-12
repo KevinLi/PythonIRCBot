@@ -1,34 +1,33 @@
 #! usr/bin/env python
 """
 Program: Cowsay
-Version: 1.0.3.28
+Version: 1.0.3.31
 Author: Kevin/banhammer
 Editors: Cam
 
-Description: CowBot is a bot designed to send different ascii cows and text to an IRC channel
+Description: Cowsay is a bot designed to send different ascii cows and text to an IRC channel, similar to the cowsay program.
 """
 
 import socket
 import sys
 from time import sleep
 
-#irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 irc = socket.socket()
-network = ''
+network = '173.230.146.5'
 port = 6667
-ircchannel = '#'
+ircchannel = '#lobby'
 
 ircname = 'Cowsay' # max 30 characters
 realname = 'COWSAYBOT'
 ident = 'cows'
-password = ''
+password = 'lolcowtrollu'
 
 crlf = '\r\n'
 onoff = 'on'
 cow = True
 
-admins = []
-allowedhosts = []
+admins = ["kevin","banhammer","horkx3","ferus"]
+allowedhosts = ["127.0.0.1","the.interwebs"]
 
 def SendIRCRaw(rawtext):
     irc.send(rawtext+crlf)
@@ -49,7 +48,7 @@ sleep(1)
 SendIRCRaw("NickServ IDENTIFY {0}".format(password))
 SendIRCRaw("MODE {0} +B".format(ircname))
 sleep(1)
-SendIRCRaw("JOIN %s" % ircchannel)
+#SendIRCRaw("JOIN %s" % ircchannel)
 
 # [0]host, [1]channel, [2]nick, [3+]message
 while True:
@@ -60,10 +59,10 @@ while True:
         if len(msg.split())>0:
             if msg.split()[0] == "PING":
                 SendIRCRaw("PONG %s" % msg.split()[1])
-#        if len(msg.split())>1:
-#            if msg.split()[1] == "001":
-#                print("001")
-#                SendIRCRaw("JOIN %s" % ircchannel)
+        if len(msg.split())>1:
+            if msg.split()[1] == "372":
+                print("372")
+                SendIRCRaw("JOIN %s" % ircchannel)
         if len(msg.split())>=4:
             try:
                 host = msgsplit[0].split("@")[1].lower()
@@ -157,7 +156,6 @@ while True:
                 SendText("    /'\\_   _/`\\")
                 SendText("    \\___)=(___/")
                 SendIRCRaw("NICK Cow")
-
 # Cow Off Notification -------------------------------------
         elif cmd == "cowsay":
             CowIsOff()
