@@ -40,7 +40,7 @@ if network == "":
     network = "" #Network address goes here
 password = raw_input("Password: ")
 ircchannel0 = "#" + raw_input("Channel 0: ")
-if channel0 == "":
+if ircchannel0 == "":
     ircchannel0 = "#lobby"
 joinchannel1 = raw_input("Join second channel? Y/N ").lower()
 if joinchannel1 != "y": pass
