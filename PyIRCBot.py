@@ -22,8 +22,8 @@ port = 6667
 crlf = '\r\n'
 noucounter = 0
 
-admins = ["kevin","horkx3","ferus"]
-allowedhosts = ["127.0.0.1","the.interwebs"]
+admins = []
+allowedhosts = []
 
 def SendIRCRaw(rawtext):
     irc.send(rawtext+crlf)
@@ -36,11 +36,11 @@ def SendPM(text):
     
 # Start Bot
 network = raw_input("Server: ")
-if network = "":
-    network = "earth.n0v4.com"
+if network == "":
+    network = "" #Network address goes here
 password = raw_input("Password: ")
 ircchannel0 = "#" + raw_input("Channel 0: ")
-if channel0 = "":
+if channel0 == "":
     ircchannel0 = "#lobby"
 joinchannel1 = raw_input("Join second channel? Y/N ").lower()
 if joinchannel1 != "y": pass
