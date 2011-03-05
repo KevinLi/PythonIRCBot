@@ -1,0 +1,4 @@
+2011-03-05
+    Finally rewrote it.
+    Should run faster than the first one.
+    Still not threaded.
