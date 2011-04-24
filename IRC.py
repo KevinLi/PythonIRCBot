@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = "KevinLi @ https://github.com/KevinLi"
-__version__ = "0.0.0.1"
+__version__ = "0.0.1.0"
 
 import socket
 
@@ -14,21 +14,22 @@ class IRC(object):
 		self.port = port
 		
 		self.owners = {
-                        
+			"owner nick":"owner host",
 			}
 		
 	def createConnection(self, nick, ident, name, *password):
 		self.socket.connect((self.host, self.port))
 		self.isConnected = True
 		self.recv()
-		self.identify(nick, ident, name, *password)
+		self.identify(nick, ident, name, password)
 		self.nick = nick
 		
-	def identify(self, nick, ident, name, *password):
+	def identify(self, nick, ident, name, password):
 		self.sendRaw("USER {0} * * :{1}".format(ident, name))
 		self.sendRaw("NICK :{0}".format(nick))
 		if password:
-			self.sendMsg("NICKSERV", "IDENTIFY {0}".format(password))
+			self.sendMsg("NICKSERV", "IDENTIFY {0}".format(password[0]))
+		
 		
 	def sendRaw(self, data):
 		if self.isConnected:
@@ -36,9 +37,13 @@ class IRC(object):
 		else:
 			print("Not connected.")
 		
-	def sendMsg(self, location, data): 
+	def sendMsg(self, location, data, *action): 
 		if self.isConnected:
-			self.sendRaw("PRIVMSG {0} :{1}".format(location, data))
+			if action:
+				if action[0]== "ACTION":
+					self.sendRaw("PRIVMSG {0} :\x01ACTION {1}\x01".format(location, data))
+			else:
+				self.sendRaw("PRIVMSG {0} :{1}".format(location, data))
 		else:
 			print("Not connected.")
 		
