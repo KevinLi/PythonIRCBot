@@ -6,16 +6,14 @@ __version__ = "0.0.1.0"
 import socket
 
 class IRC(object):
-	def __init__(self, host, port):
+	def __init__(self, host, port, owners):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.isConnected = False
 		
 		self.host = host
 		self.port = port
 		
-		self.owners = {
-			"owner nick":"owner host",
-			}
+		self.owners = owners
 		
 	def createConnection(self, nick, ident, name, *password):
 		self.socket.connect((self.host, self.port))

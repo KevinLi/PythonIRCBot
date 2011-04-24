@@ -8,7 +8,10 @@ __version__ = "0.0.1.0"
 
 
 if __name__ == '__main__':
-	Connection = IRC.IRC("", 6667)
+	Connection = IRC.IRC("", 6667,{
+                "owner nick":"owner host",
+		}
+        )
 	Connection.createConnection("nickname", "ident", "username","password")
 	Connection.sendRaw("MODE {0} +B".format(Connection.nick))
 	Parser = IRCParser.IRCParser()
@@ -35,8 +38,8 @@ if __name__ == '__main__':
 			text = data[3]
 			location = data[2]
 			
-			if not text:
-				text = [" "]
+			if not text[0]:
+				text[0] = " "
 			
 			# CTCP
 			if text[0][0] == "\x01" and text[0][-1] == "\x01":
