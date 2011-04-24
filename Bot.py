@@ -37,7 +37,9 @@ if __name__ == '__main__':
 			action = data[1]
 			text = data[3]
 			location = data[2]
-			
+
+			if not text:
+                                text = [" "]
 			if not text[0]:
 				text[0] = " "
 			
